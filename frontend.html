@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save Your Video</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg" alt="YouTube Logo" class="logo">
+                <h1 class="main-heading">Save Your Video</h1>
+            </div>
+        </header>
+    </div>
+
+    <div class="content-section">
+        <h2 class="title">Get Your Favorite Videos with Ease!</h2>
+        <p class="subtitle">
+            Just paste the YouTube link, and we’ll handle the rest.
+        </p>
+        <form id="downloadForm">
+            <input type="text" name="link" placeholder="Enter YouTube video link" required>
+            <button type="submit">Download Now</button>
+        </form>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('downloadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const resultElement = document.getElementById('result');
+
+            // Open loading page in a new tab right away
+            const loadingWindow = window.open('loading.html', '_blank');
+
+            try {
+                const response = await fetch('http://localhost:8000/download', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    // Redirect to loading page with file path to show download link when ready
+                    loadingWindow.location.href = `loading.html?file=${encodeURIComponent(result.file_path)}`;
+                } else {
+                    resultElement.textContent = 'Error: ' + response.statusText;
+                    resultElement.className = 'error';
+                }
+            } catch (error) {
+                resultElement.textContent = 'Error: Unable to connect to server';
+                resultElement.className = 'error';
+            }
+        });
+    </script>
+</body>
+</html>

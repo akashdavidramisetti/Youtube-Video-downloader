@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Downloading...</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="loading-container">
+        <div id="loading-message">
+            <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." class="loading-gif">
+            <p>Downloading your video, please wait...</p>
+        </div>
+        <div id="download-link" style="display: none;">
+            <h2>Download Complete!</h2>
+            <a href="" id="video-link" download>Click here to download your video</a>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const filePath = urlParams.get('file');
+
+        if (filePath) {
+            const linkElement = document.getElementById('video-link');
+            linkElement.href = `http://localhost:8000/file/${encodeURIComponent(filePath.split('/').pop())}`;
+            
+            document.getElementById('loading-message').style.display = 'none';
+            document.getElementById('download-link').style.display = 'block';
+        } else {
+            console.error("Error: No file path provided in URL parameters");
+        }
+    </script>
+</body>
+</html>
